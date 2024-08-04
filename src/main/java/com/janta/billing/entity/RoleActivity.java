@@ -8,9 +8,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,30 +20,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleMaster {
-
+public class RoleActivity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
-	String roleName;
-	LocalDateTime loggedDate;
-	LocalDateTime lastUpdatedOn;
-	
-	@OneToMany(mappedBy = "role")
-	List<EmployeeDetails> employees;
-	
-	@OneToMany(mappedBy = "role")
+	String activityName;
+	@OneToMany(mappedBy = "activity",fetch = FetchType.LAZY)
 	List<RoleActivityMapping> activityList;
-	
-	@PrePersist
-    protected void onCreate() {
-		LocalDateTime now = LocalDateTime.now();
-        this.loggedDate = now;
-        this.lastUpdatedOn = now;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.lastUpdatedOn = LocalDateTime.now();
-    }
 }

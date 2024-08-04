@@ -14,4 +14,6 @@ public interface EmployeeDeatilRepository extends JpaRepository<EmployeeDetails,
 
 	Optional<EmployeeDetails> findByEmail(String username);
 
+	EmployeeDetails findEmployeeDetailsByEmail(String email);
+
 }

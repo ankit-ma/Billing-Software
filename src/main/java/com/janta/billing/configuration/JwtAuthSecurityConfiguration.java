@@ -45,7 +45,7 @@ public class JwtAuthSecurityConfiguration {
 		@Bean
 		SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 			http.authorizeHttpRequests(auth->{
-				auth.anyRequest().authenticated();
+				auth.requestMatchers("/register").permitAll().anyRequest().authenticated();
 			});
 			http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 			http.httpBasic(withDefaults());
@@ -56,7 +56,7 @@ public class JwtAuthSecurityConfiguration {
 			return http.build();
 		}
 
-	// Allow request from CORS This is global configuration 
+	// Allow request from CORS This is global configuration
 	// for specific controller we can use @CrossOrigin annotation
 		@Bean
 		public WebMvcConfigurer corsConfigurer() {

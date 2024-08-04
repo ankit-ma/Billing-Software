@@ -37,7 +37,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			BeanUtils.copyProperties(employee, employeeDto);
 			employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 			LOGGER.error(employee.toString());
-			RoleMaster roleMaster = roleMasterRepository.findByRoleName(Constants.ROLE_STAFF);
+			RoleMaster roleMaster = roleMasterRepository.findByRoleName(employeeDto.getDesignation());
 			employee.setRole(roleMaster);
 			EmployeeDetails existingEmployee = employeeDeatilRepository.findByPhoneNumber(employee.getPhoneNumber());
 			if(existingEmployee==null)
@@ -54,6 +54,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 		}
 		
 		return "Succ";
+	}
+	@Override
+	public EmployeeDetails fetchEmployeeDetails(String email) {
+		
+		EmployeeDetails employeeDetails = employeeDeatilRepository.findEmployeeDetailsByEmail(email);
+		return employeeDetails;
 	}
 
 }

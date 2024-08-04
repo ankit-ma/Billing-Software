@@ -4,11 +4,9 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -22,27 +20,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class EmployeeDetails {
-	
+public class BillRecord {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	Long id;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	String id;
 	
 	@ManyToOne
-	@JoinColumn(name = "role_id")
-	RoleMaster role;
-	String employeeName;
-	String phoneNumber;
-	String password;
-	String email;
-	String designation;
+	CustomerDetails customerDetails;
 	
-	Boolean isApproved;
+	Double billAmount;
+	String productName; // json of product name and quantity
+	Integer quantity;
+	Double totalAmount;
+	Double dueAmount;
 	
+	@Column(name = "logged_by",nullable = false,updatable = false)
+	Long loggedBy;
 	@Column(name = "logged_date",nullable = false,updatable = false)
 	LocalDateTime loggedDate;
-	@Column(name = "last_updated_on", nullable = false)
+	@Column(name = "last_updated_on",nullable = false)
 	LocalDateTime lastUpdatedOn;
+	@Column(name = "last_updated_by",nullable = false)
+	Long lastUpdatedBy;
 	Integer rowstate;
 	
 	@PrePersist
@@ -50,14 +49,12 @@ public class EmployeeDetails {
 		LocalDateTime now = LocalDateTime.now();
         this.loggedDate = now;
         this.lastUpdatedOn = now;
-        this.isApproved=false;
         this.rowstate=1;
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.lastUpdatedOn = LocalDateTime.now();
-        this.isApproved=false;
         this.rowstate=1;
     }
 }
