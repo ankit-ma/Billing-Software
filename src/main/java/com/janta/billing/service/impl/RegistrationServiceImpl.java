@@ -47,13 +47,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 			else {
 				employee.setId(existingEmployee.getId());
 				employeeDeatilRepository.save(employee);
+				return "User Already present - Please login";
 			}
 		}
 		catch(Exception e) {
 			throw new SystemException(e.getMessage());
 		}
 		
-		return "Succ";
+		return "Succesfully Registered - Will able to login after Admin approval";
 	}
 	@Override
 	public EmployeeDetails fetchEmployeeDetails(String email) {

@@ -57,7 +57,6 @@ public class EmployeeDetails {
     @PreUpdate
     protected void onUpdate() {
         this.lastUpdatedOn = LocalDateTime.now();
-        this.isApproved=false;
         this.rowstate=1;
     }
 }

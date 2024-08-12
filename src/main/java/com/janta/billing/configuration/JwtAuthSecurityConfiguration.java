@@ -49,7 +49,7 @@ public class JwtAuthSecurityConfiguration {
 			});
 			http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 			http.httpBasic(withDefaults());
-			http.formLogin(withDefaults());
+			//http.formLogin(withDefaults());
 			http.csrf().disable();
 			http.headers().frameOptions().sameOrigin();
 			http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);

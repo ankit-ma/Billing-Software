@@ -44,4 +44,10 @@ public class CustomerDetailsServiceImpl implements CustomerDetailsService {
 		
 	}
 
+	@Override
+	public CustomerDetails fetchCustomerDetails(String phoneNumber) {
+		Optional<CustomerDetails> cuOptional = customerDetailsRepository.findByPhoneNumber(phoneNumber);
+		return cuOptional.isPresent()?cuOptional.get():null;
+	}
+
 }
