@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.janta.billing.entity.ProductUploadRecord;
 import com.janta.billing.exception.SystemException;
+import com.janta.billing.repository.InventoryRepository;
 import com.janta.billing.repository.ProductUploadRecordRepository;
 import com.janta.billing.service.ProductUploadService;
 import com.janta.billing.util.MyProductExcelProcessor;
@@ -22,6 +23,9 @@ public class ProductUploadServiceImpl implements ProductUploadService {
 
 	@Autowired
 	private ProductUploadRecordRepository productUploadRecordRepository;
+
+	@Autowired
+	private InventoryRepository inventoryRepository;
 	
 	@Override
 	public String processUploadedProductExcel(MultipartFile file) throws SystemException {
@@ -35,6 +39,7 @@ public class ProductUploadServiceImpl implements ProductUploadService {
 			
 		MyProductExcelProcessor excelProcessor = new MyProductExcelProcessor(file.getInputStream(),getProductHeader());
 		excelProcessor.readExcel();
+		inventoryRepository.saveAll(excelProcessor.getInventoryList());
 		productUploadRecord.setStatus("Completed");
 		productUploadRecordRepository.save(productUploadRecord);
 		return productUploadRecord.getId()+".xlsx";
