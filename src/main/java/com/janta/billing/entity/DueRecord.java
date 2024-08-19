@@ -2,6 +2,8 @@ package com.janta.billing.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,10 +28,12 @@ public class DueRecord {
 	Long id;
 	
 	@OneToOne
+	@JsonIgnore
 	CustomerDetails customer;
 	
 	Double dueAmount;
 	Double lastDueAmount;
+	
 	
 	@Column(name = "logged_by",nullable = false,updatable = false)
 	Long loggedBy;

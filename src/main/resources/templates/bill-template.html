@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>Bill</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .bill-container { width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px dotted #ccc; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; }
+        .customer-info, .product-info, .total-info { margin-bottom: 20px; }
+        .customer-info strong, .product-info strong, .total-info strong { display: block; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></link>
+</head>
+<body>
+    <div class="bill-container">
+        <div class="header">
+            <h1>---------------- Janta Store ----------------</h1>
+        </div>
+        <div class="p-4 bg-blue-100 rounded-lg">
+        	<p><strong>Bill No. :</strong> <span th:text="${bilId}"></span></p>
+        	<hr/>
+        	<br/>
+            <p><strong>Customer Name:</strong> <span th:text="${customerName}"></span></p>
+            <p><strong>Phone Number:</strong> +91-<span th:text="${phoneNumber}"></span></p>
+            <p><strong>Address:</strong> <span th:text="${address}"></span></p>
+        </div>
+        <div class="p-4 bg-green-100 rounded-lg">
+            <p><strong>Due:</strong> Rs. <span th:text="${due}"></span></p>
+            <p><strong>Total Bill Amount:</strong> Rs. <span th:text="${totalPrice}"></span></p>
+            <p><strong>Quantity:</strong> <span th:text="${quantity}"></span></p>
+        </div>
+        <table class="min-w-full bg-white">
+        <thead  class="text-xs text-white bg-green-500 light:bg-gray-700 dark:text-white">
+        <tr>
+                <th class="text-xs py-2 px-4 border-b">Product Name</th>
+                <th class="text-xs py-2 px-4 border-b">Quantity</th>
+                <th class="text-xs py-2 px-4 border-b">Base Price</th>
+                <th class="text-xs py-2 px-4 border-b">SGST(%)</th>
+                <th class="text-xs py-2 px-4 border-b">CGST(%)</th>
+                <th class="text-xs py-2 px-4 border-b">Discount(%)</th>
+                <th class="text-xs py-2 px-4 border-b">Total </th>
+        </tr>
+        
+        </thead>
+        <tbody>
+                <tr th:each="product : ${products}">
+                    <td class="text-xs py-2 px-4 border-b" th:text="${product.productName}"></td>
+                    <td class="text-xs py-2 px-4 border-b" th:text="${product.quantity}"></td>
+                    <td class="text-xs py-2 px-4 border-b" th:text="${product.mrp}"></td>
+                    <td class="text-xs py-2 px-4 border-b" th:text="${product.sgst}"></td>
+                    <td class="text-xs py-2 px-4 border-b" th:text="${product.cgst}"></td>
+                    <td class="text-xs py-2 px-4 border-b" th:text="${product.discount}"></td>
+                    <td class="text-xs py-2 px-4 border-b" th:text="${product.total}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

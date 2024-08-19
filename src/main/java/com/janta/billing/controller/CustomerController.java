@@ -3,6 +3,8 @@ package com.janta.billing.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +47,7 @@ public class CustomerController {
 		}
 	}
 	@GetMapping("/janta-store/add-customer/{employeeId}/{phoneNumber}")
-	public ApiResponse<?> getCustomerDetails(@PathVariable Long employeeId,@PathVariable String phoneNumber){
+	public ResponseEntity<CustomerDetails> getCustomerDetails(@PathVariable Long employeeId,@PathVariable String phoneNumber){
 		try {
 		EmployeeDetails employeeDetails = employeeDetailsService.getEmployeeDetailsById(employeeId);
 		if(employeeDetails == null) {
@@ -53,14 +55,11 @@ public class CustomerController {
 		}
 		CustomerDetails customerDetails= customerDetailsService.fetchCustomerDetails(phoneNumber);
 		if(customerDetails == null) {
-			return ApiResponse.builder()
-					.message("New customer please register")
-					.build();
+			return ResponseEntity.status(HttpStatus.ACCEPTED)
+					.body(null);
 		}
-		return ApiResponse.builder()
-				.message("Customer exist with given number")
-				.data(customerDetails)
-				.build();
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(customerDetails);
 		}
 		catch(Exception e) {
 			LOGGER.error(e.getMessage());

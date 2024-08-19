@@ -23,7 +23,7 @@ public class EmployeeDto {
 	String employeeName;
 	@NotBlank(message="Phone number cannot be empty")
 	String phoneNumber;
-	@JsonIgnore
+
 	String password;
 	String email;
 	String designation;

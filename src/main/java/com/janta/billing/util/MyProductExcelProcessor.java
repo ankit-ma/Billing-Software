@@ -54,7 +54,6 @@ public class MyProductExcelProcessor extends ExcelReaderProcessing{
 					.additionalInfo(rowData.get(8))
 					.loggedBy(1l)
 					.lastUpdatedBy(1l)
-					
 					.build();
 			inventoryList.add(inventory);
 		

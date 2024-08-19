@@ -64,6 +64,7 @@ public class JwtAuthSecurityConfiguration {
 				public void addCorsMappings(CorsRegistry registry) {
 					registry.addMapping("/**")
 					.allowedMethods("*")
+					.allowedHeaders("*")
 					.allowedOrigins("*");
 				}
 			};
