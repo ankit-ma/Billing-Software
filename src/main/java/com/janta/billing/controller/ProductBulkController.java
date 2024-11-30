@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.janta.billing.entity.Inventory;
+import com.janta.billing.service.InventoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,10 @@ public class ProductBulkController {
 	
 	@Autowired
 	private ProductUploadService productUploadService;
-	
+
+	@Autowired
+	private InventoryService inventoryService;
+
 	@GetMapping("/download-template")
 	public ResponseEntity<Resource> downloadProductTemplete(){
 		try {
@@ -93,6 +98,17 @@ public class ProductBulkController {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(historyList);
 		}
 		catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(Page.empty());
+		}
+	}
+
+	@GetMapping("/inventry-info/{size}/{pageNumber}")
+	public ResponseEntity<Page<Inventory>> fetchInventryDetails(@PathVariable Integer size,@PathVariable Integer pageNumber){
+		try {
+			Page<Inventory> inventoryList = inventoryService.fetchInventryDetails(size,pageNumber);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(inventoryList);
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(Page.empty());
 		}
