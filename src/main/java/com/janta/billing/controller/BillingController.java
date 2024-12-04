@@ -26,6 +26,7 @@ public class BillingController {
 	private BillRecordService billRecordService;
 	
 	@PostMapping("/generate/{employeeId}")
+	
 	public ResponseEntity<Resource> generateBill(@PathVariable Long employeeId, @RequestBody BillGenerateDto billGenerateDto){
 		
 		try {
