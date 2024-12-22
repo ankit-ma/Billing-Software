@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.janta.billing.configuration.EmailService;
+import com.janta.billing.entity.*;
+import com.janta.billing.repository.*;
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +26,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import com.janta.billing.dto.BillGenerateDto;
-import com.janta.billing.entity.BillRecord;
-import com.janta.billing.entity.CustomerDetails;
-import com.janta.billing.entity.DueRecord;
-import com.janta.billing.entity.Inventory;
 import com.janta.billing.exception.SystemException;
-import com.janta.billing.repository.BillRepository;
-import com.janta.billing.repository.CustomerDetailsRepository;
-import com.janta.billing.repository.DueRecordRepository;
-import com.janta.billing.repository.InventoryRepository;
 import com.janta.billing.service.BillRecordService;
 import com.janta.billing.service.PdfService;
 import com.janta.billing.util.Constants;
@@ -61,7 +56,12 @@ public class BillRecordServiceImpl implements BillRecordService {
 
 	@Autowired
 	private PdfService pdfService;
-	
+
+	@Autowired
+	private EmailService emailService;
+
+	@Autowired
+	private EmailTemplateRepository emailTemplateRepository;
 	@Override
 	@Transactional
 	public ResponseEntity<Resource> generateBillForCustomer(BillGenerateDto billGenerateDto, Long employeeId) throws IOException {
@@ -127,7 +127,17 @@ public class BillRecordServiceImpl implements BillRecordService {
 		//String fileName = UUID.randomUUID().toString()+".xlsx";
 		String fileName =  billRecord.getId()+".pdf";
 		Path filePath = uploadPath.resolve(fileName);
+
 		Files.copy(resource.getInputStream(), filePath);
+		// send bill over mail
+		Map<String,Object> model = new HashMap<>();
+		model.put("name",customerDetails.getCustomerName());
+		model.put("billAmount",billGenerateDto.getTotalPrice());
+		model.put("totalAmount",billGenerateDto.getCustomerDetails().getTotalAmount());
+		CompletableFuture.runAsync(()->{
+			sendBillOnEmail(Constants.BILL_PATH+fileName,customerDetails.getEmail(),"bill",model);
+		});
+
 		// send to response entity
 		HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileName);
@@ -138,7 +148,7 @@ public class BillRecordServiceImpl implements BillRecordService {
                 .body(resource);
 	}
 
-	public String createHtmlBill(BillGenerateDto billData, String billId, int totalQuantity) {
+	private String createHtmlBill(BillGenerateDto billData, String billId, int totalQuantity) {
 		Context context = new Context();
 		context.setVariable("customerName", billData.getCustomerDetails().getCustomerName());
 		context.setVariable("phoneNumber", billData.getCustomerDetails().getPhoneNumber());
@@ -151,5 +161,35 @@ public class BillRecordServiceImpl implements BillRecordService {
 		context.setVariable("bilId", billId);
 		
 		return templateEngine.process("bill-template", context);
+	}
+
+	private String sendBillOnEmail(String filePath, String to, String templateName, Map<String,Object> model){
+		Optional<EmailTemplates> emailMetaData = emailTemplateRepository.findByTemplateName(templateName);
+
+		// Prepare email template
+		emailMetaData.ifPresentOrElse((e)->{
+			String htmlBody = createDueHtmlEmailBody(e.getDynamicKeys(),model,e.getTemplateName());
+			try {
+				emailService.sendMimeEmailWithAttachment(to,"Janta store bill",htmlBody,filePath);
+			} catch (MessagingException ex) {
+				throw new RuntimeException(ex);
+			}
+
+		}, ()->{
+			throw new SystemException("There is no email template");
+		});
+
+		// send mail using service
+		return "successfully mail sent";
+	}
+
+	public String createDueHtmlEmailBody(String keys,Map<String,Object> content,String templateName) {
+		Context context = new Context();
+		String[] keyArray = keys.split(",");
+		for(String key : keyArray) {
+			context.setVariable(key,content.get(key));
+		}
+
+		return templateEngine.process(templateName, context);
 	}
 }

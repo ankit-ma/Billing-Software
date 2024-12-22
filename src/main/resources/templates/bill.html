@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Reminder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    p {
+      color: #555;
+      margin: 10px 0;
+    }
+
+    .highlight {
+      color: #e53935;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+    }
+
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Dear <span th:text="${name}"></span>,</h2>
+  <p>Thankyou to shop on <strong>Janta Store.</strong></p>
+  <hr>
+  <p>Your Bill details and a copy attached to this mail</p>
+  <p>Bill Amount: <span class="highlight">₹<span th:text="${billAmount}"></span></span></p>
+  <p>Total bill Amount: <span class="highlight">₹<span th:text="${totalAmount}"></span></span></p>
+  <p>Hope you enjoyed shopping with us. </p>
+  <hr>
+  <div class="footer">
+    <p>For any assistance, please contact us at <a href="mailto:janta.store.service@gmail.com">janta.store.service@gmail.com</a></p>
+    <p>&copy; 2024 Janta Store. All rights reserved.</p>
+  </div>
+</div>
+</body>
+</html>
