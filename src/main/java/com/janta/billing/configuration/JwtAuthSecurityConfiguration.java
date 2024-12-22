@@ -45,7 +45,8 @@ public class JwtAuthSecurityConfiguration {
 		@Bean
 		SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 			http.authorizeHttpRequests(auth->{
-				auth.requestMatchers("/register").permitAll().anyRequest().authenticated();
+				auth.requestMatchers("/register", "/admin/product/**").permitAll()
+				.anyRequest().authenticated();
 			});
 			http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 			http.httpBasic(withDefaults());

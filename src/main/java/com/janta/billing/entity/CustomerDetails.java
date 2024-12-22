@@ -34,7 +34,7 @@ public class CustomerDetails {
 	String customerName;
 	String phoneNumber;
 	String address;
-	
+	String email;
 	@Column(name = "logged_by",nullable = false,updatable = false)
 	Long loggedBy;
 	@Column(name = "logged_date",nullable = false,updatable = false)

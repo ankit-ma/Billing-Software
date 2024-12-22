@@ -18,6 +18,7 @@ public class CustomerDetailsDto {
 	String phoneNumber;
 	@NotBlank
 	String address;
-	
+	@NotBlank
+	String email;
 	
 }
