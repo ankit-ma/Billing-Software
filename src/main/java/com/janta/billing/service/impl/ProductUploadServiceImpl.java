@@ -65,6 +65,7 @@ public class ProductUploadServiceImpl implements ProductUploadService {
 				document.addField("thresholdQuantity",  inventory.getThresholdQuantity());
 				document.addField("additionalInfo",  inventory.getAdditionalInfo());
 				document.addField("productId", inventory.getId());
+				document.addField("category",inventory.getCategory().getCategoryName());
 				products.add(document);
 			});
 
@@ -95,6 +96,9 @@ public class ProductUploadServiceImpl implements ProductUploadService {
 		headerMap.put(6, "Quantity");
 		headerMap.put(7, "Threshold quantity");
 		headerMap.put(8, "Additional Information");
+		headerMap.put(9, "Category");
+		headerMap.put(10, "Image url");
+
 		return headerMap;
 	}
 

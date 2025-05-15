@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Category {
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	String id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	int id;
 	
 	String categoryName;
 }

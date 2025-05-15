@@ -13,6 +13,7 @@ public class ProductDto {
 	private String productName;
 	private String brandName;
 	private String additionalInfo;
+	private String category;
 	private Double mrp;
 	private Double cgst;
 	private Double sgst;

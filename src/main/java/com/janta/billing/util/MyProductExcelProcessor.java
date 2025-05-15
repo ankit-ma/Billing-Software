@@ -5,15 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.janta.billing.entity.Category;
+import com.janta.billing.enums.CategoryEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.janta.billing.entity.Inventory;
-import com.janta.billing.service.InventoryService;
-import com.janta.billing.service.impl.InventoryServiceImpl;
 
 import lombok.Data;
 
@@ -41,8 +38,24 @@ public class MyProductExcelProcessor extends ExcelReaderProcessing{
 	@Override
 	public void processRow(Map<Integer, String> rowData) {
 		logger.error("Row:: {}",rowData);
-
-			Inventory inventory = Inventory.builder()
+		String category = "Other";
+		int categoryId = 4;
+			if(CategoryEnum.valueOf(rowData.get(9)) == CategoryEnum.Clothing)
+			{
+				category = "Clothing";
+				categoryId = CategoryEnum.Clothing.getCode();
+			} else if (CategoryEnum.valueOf(rowData.get(9)) == CategoryEnum.Electronics) {
+				category = "Electronics";
+				categoryId = CategoryEnum.Electronics.getCode();
+			} else if (CategoryEnum.valueOf(rowData.get(9)) == CategoryEnum.Grocery) {
+				category = "Grocery";
+				categoryId = CategoryEnum.Grocery.getCode();
+			}
+			else {
+				category = "Others";
+				categoryId = CategoryEnum.Others.getCode();
+			}
+		Inventory inventory = Inventory.builder()
 					.productName(rowData.get(0))
 					.brandName(rowData.get(1))
 					.mrp(Double.parseDouble(rowData.get(2)))
@@ -52,9 +65,9 @@ public class MyProductExcelProcessor extends ExcelReaderProcessing{
 					.quantity(Integer.parseInt(rowData.get(6).split("\\.")[0]))
 					.thresholdQuantity(Integer.parseInt(rowData.get(7).split("\\.")[0]))
 					.additionalInfo(rowData.get(8))
+					.category(Category.builder().id(categoryId).categoryName(category).build())
 					.loggedBy(1l)
 					.lastUpdatedBy(1l)
-
 					.build();
 			inventoryList.add(inventory);
 		
